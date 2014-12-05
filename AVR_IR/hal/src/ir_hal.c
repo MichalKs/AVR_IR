@@ -54,7 +54,7 @@ void IR_HAL_Init(
   TCNT1 = 0; // zero out timer value
 
   TCCR1A = (1<<WGM12); // CTC mode
-  TCCR1B = (1<<CS11); // prescaler 8-bit - counts every 2
+  TCCR1B = (1<<CS11); // prescaler 8-bit - counts every 0.5 us
 
   // input compare and compare interrupt
   TIMSK |= (1<<TICIE1) | (1<<OCIE1A);
@@ -74,6 +74,7 @@ ISR(TIMER1_COMPA_vect) {
   // If timeout occurs, clear frame state.
   resetFrameCallback();
   TCCR1B &= ~(1<<ICES1); // interrupt on falling edge
+  edge = FALLING_EDGE;
 }
 /**
  * @brief Timer 1 input capture interrupt
