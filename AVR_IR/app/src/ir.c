@@ -47,7 +47,7 @@
 
 void IR_ResetFrame(void);
 void IR_RxData(uint16_t pulseWidth, uint8_t edge);
-
+void IR_RC5_Decode(uint16_t pulseWidth, uint8_t edge);
 
 #define RC5   0 ///< RC5 coding
 #define SIRC  1 ///< SIRC coding
@@ -67,6 +67,9 @@ static uint8_t rxCount; ///< Received frames counter
 static uint16_t frame;       ///< The whole received frame
 static uint8_t  pulseCount;  ///< Counts the number of half bits
 static uint8_t  bitCount;    ///< Counts the number of bits received
+
+static uint16_t rawData[64];
+static uint8_t dataIndex;
 
 typedef enum {
   RC5_DIGIT0 = 0,
@@ -119,6 +122,46 @@ void IR_Init(void) {
  * @param edge 0 - low pulse (rising edge), 1 - high pulse (falling edge)
  */
 void IR_RxData(uint16_t pulseWidth, uint8_t edge) {
+
+  // put raw data in array for later reference
+  if (dataIndex < 64) {
+    rawData[dataIndex++] = pulseWidth;
+  }
+
+  // decode data
+  IR_RC5_Decode(pulseWidth, edge);
+
+}
+
+/**
+ * @brief Resets frame after timeout.
+ */
+void IR_ResetFrame(void) {
+  bitCount = 13;
+  pulseCount = 0;
+
+//  static uint16_t counter;
+
+//  counter++;
+
+  // every 3.6 s print raw data to terminal
+//  if (counter >= 100) {
+//    for (uint8_t i = 0; i<32; i++) {
+//      print("%u ", rawData[i]);
+//
+//      if (i==15) {
+//        print("\r\n");
+//      }
+//    }
+//    print("\r\n");
+//    counter = 0;
+//
+//  }
+
+  dataIndex = 0; // clear buffer after frame timeout
+}
+
+void IR_RC5_Decode(uint16_t pulseWidth, uint8_t edge) {
 
   // frame starts with falling edge
   // since the data line is normally high (pullup)
@@ -198,13 +241,6 @@ void IR_RxData(uint16_t pulseWidth, uint8_t edge) {
     pulseCount++; // increment pulse count value
   }
 
-}
-/**
- * @brief Resets frame after timeout.
- */
-void IR_ResetFrame(void) {
-  bitCount = 13;
-  pulseCount = 0;
 }
 
 
