@@ -15,9 +15,14 @@
  * http://www.gnu.org/licenses/gpl.html
  * @endverbatim
  */
-#ifndef HAL_INC_IR_HAL_H_
-#define HAL_INC_IR_HAL_H_
+#ifndef INC_IR_HAL_H_
+#define INC_IR_HAL_H_
 
 
+void IR_HAL_Init(
+    void (*readDataCb)(uint16_t pulseWidth, uint8_t edge),
+    void (*resetFrameCb)(void),
+    uint32_t timeout);
 
-#endif /* HAL_INC_IR_HAL_H_ */
+
+#endif /* INC_IR_HAL_H_ */

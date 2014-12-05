@@ -23,6 +23,7 @@
 #include <timers.h>
 #include <comm.h>
 #include <printf_setup.h>
+#include <ir.h>
 
 #define SYSTICK_FREQ 1000 ///< Frequency of the SysTick set at 1kHz.
 #define COMM_BAUD_RATE 115200UL ///< Baud rate for communication with PC
@@ -62,6 +63,8 @@ int main(void) {
 	LED_Init(LED2); // Add an LED
 	LED_ChangeState(LED2, LED_ON);
 
+	IR_Init();
+
 	while (1) {
 
 	  TIMER_SoftTimersUpdate(); // run timers
@@ -76,6 +79,6 @@ void softTimerCallback(void) {
   LED_Toggle(LED1);
   LED_Toggle(LED0);
 
-  println("Test printf");
+//  println("Test printf");
 
 }
